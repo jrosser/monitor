@@ -1,0 +1,30 @@
+version: "3.9"
+services:
+  lutron:
+    build: lutron-pro-hub-mqtt
+    environment:
+      LUTRON_HOST: 192.168.2.10
+      LUTRON_PORT: 23
+      LUTRON_MQTT_URL: http://mqtt-broker
+  mqtt-broker:
+    image: eclipse-mosquitto
+    volumes:
+      - ./mosquitto:/mosquitto
+  mqtt-explorer:
+    image: smeagolworms4/mqtt-explorer
+    ports:
+      - 4000:4000
+    environment:
+      - HTTP_PORT=4000
+      - CONFIG_PATH=/mqtt-explorer/config
+      #- HTTP_USER=
+      #- HTTP_PASSWORD=
+      #- SSL_KEY_PATH=
+      #- SSH_CERT_PATH=
+  influxdb:
+    image: influxdb
+    ports: 8086:8086
+    environment:
+      - DOCKER_INFLUXDB_INIT_USERNAME
+    volumes:
+      - ./influxdb:/var/lib/influxdb2
